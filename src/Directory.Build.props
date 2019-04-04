@@ -1,0 +1,20 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\Directory.Build.props" />
+
+  <PropertyGroup>
+    <Copyright>Alexander Bocharov</Copyright>
+    <Authors>Alexander Bocharov</Authors>
+    <Title>Basic Authentication module for Orchard Core</Title>
+    <Description>The Basic Authentication module enables authentication of external apps through Basic Authentication.</Description>
+    <PackageId>OrchardCore.BasicAuthentication</PackageId>
+    <PackageTags>BasicAuth;BasicAuthentication;OrchardCore</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+  </PropertyGroup>
+
+</Project>

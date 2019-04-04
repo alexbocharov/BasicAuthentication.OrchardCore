@@ -1,0 +1,27 @@
+image: Windows Server 2019
+
+# Do not build feature branch with open Pull Requests
+skip_branch_with_pr: true
+branches:
+  only:
+    - master
+    - dev
+
+environment:
+  global:
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+    DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+# Install scripts. (runs after repo cloning)
+install:
+  - ps: $env:BUILD_BUILDNUMBER = $env:APPVEYOR_BUILD_NUMBER
+
+build_script:
+  - dotnet build -c Release
+  - ps: if ($IsMasterBranch -or $IsDevBranch) { dotnet pack -c Release --no-build }
+
+clone_depth: 1
+test: off
+
+artifacts:
+- path: 'src\**\*.nupkg'
