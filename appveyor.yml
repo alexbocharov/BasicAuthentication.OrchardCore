@@ -15,6 +15,11 @@ environment:
 # Install scripts. (runs after repo cloning)
 install:
   - ps: $env:BUILD_BUILDNUMBER = $env:APPVEYOR_BUILD_NUMBER
+  - ps: $IsMasterBranch = ($env:APPVEYOR_REPO_BRANCH -eq "master" -And -not $env:APPVEYOR_PULL_REQUEST_NUMBER)
+  - ps: $IsDevBranch = ($env:APPVEYOR_REPO_BRANCH -eq "dev" -And -not $env:APPVEYOR_PULL_REQUEST_NUMBER)
+
+init:
+  - dotnet --version
 
 build_script:
   - dotnet build -c Release
