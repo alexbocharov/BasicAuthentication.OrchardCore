@@ -50,28 +50,13 @@ stages:
 
         # Only enable publishing in non-public, non PR scenarios.
         - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-          - _OfficialBuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName) /p:Sign=false
-              /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
-              /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
-
+          - _OfficialBuildArgs: /p:DotNetSignType=$(_SignType) 
+                                /p:TeamName=$(_TeamName) 
+                                /p:Sign=false
+                                /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
+                                /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
         strategy:
           matrix:
-            # Build_Debug:
-            #   _BuildConfig: Debug
-            #   _PublishType: none
-            #   _SignType: test
-            #   _DotNetPublishToBlobFeed : false
-            # Build_Release:
-            #   _BuildConfig: Release
-            #   # PRs or external builds are not signed.
-            #   ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-            #     _PublishType: none
-            #     _SignType: test
-            #     _DotNetPublishToBlobFeed : false
-            #   ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-            #     _PublishType: blob
-            #     _SignType: real
-            #     _DotNetPublishToBlobFeed : true
             ${{ if in(variables['Build.Reason'], 'PullRequest') }}:
               Build_Debug:
                 _BuildConfig: Debug
@@ -115,7 +100,7 @@ stages:
         steps:
         - checkout: self
           clean: true
-        - script: chmod +x eng/common/cibuild.sh && eng/common/cibuild.sh
+        - script: eng/common/cibuild.sh
             --configuration $(_BuildConfig)
             --prepareMachine
           name: Build
@@ -136,7 +121,7 @@ stages:
         steps:
         - checkout: self
           clean: true
-        - script: chmod +x eng/common/cibuild.sh && eng/common/cibuild.sh
+        - script: eng/common/cibuild.sh
             --configuration $(_BuildConfig)
             --prepareMachine
           name: Build
