@@ -83,7 +83,7 @@ stages:
         - script: $(_Script)
             -configuration $(_BuildConfig) 
             -prepareMachine
-            $(_InternalBuildArgs)
+            $(_OfficialBuildArgs)
             $(_ValidateSdkArgs)
           displayName: Windows Build / Publish
         - task: NuGetCommand@2
