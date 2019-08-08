@@ -119,7 +119,7 @@ jobs:
             _DotNetPublishToBlobFeed: true
             _BuildArgs: $(_OfficialBuildArgs)
       steps:
-      - script: chmod +x eng/common/build.sh && eng/common/build.sh -restore -build -test -pack -publish -ci -configuration $(_BuildConfig) -prepareMachine $(_BuildArgs)
+      - script: eng/common/build.sh -restore -build -test -pack -publish -ci -configuration $(_BuildConfig) -prepareMachine $(_BuildArgs)
         name: Build
         displayName: Build
         condition: succeeded()
