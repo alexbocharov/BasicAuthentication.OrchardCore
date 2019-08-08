@@ -31,7 +31,7 @@ jobs:
       enablePublishUsingPipelines: $(_PublishUsingPipelines)
       helixRepo: alexbocharov/OrchardCore.BasicAuthentication
       jobs:
-      - job: Windows_NT
+      - job: Windows
         pool:
           name: Hosted VS2017
         variables:
