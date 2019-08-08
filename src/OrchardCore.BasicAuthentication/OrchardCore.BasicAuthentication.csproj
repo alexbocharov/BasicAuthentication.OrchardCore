@@ -1,7 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Title>Basic Authentication module for Orchard Core</Title>
+    <Description>The Basic Authentication module enables authentication of external apps through Basic Authentication.</Description>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>OrchardCore.BasicAuthentication</PackageId>
+    <PackageTags>BasicAuth;BasicAuthentication;OrchardCore</PackageTags>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsPackable>true</IsPackable>
+    <IsShipping>true</IsShipping>
   </PropertyGroup>
 
   <ItemGroup>

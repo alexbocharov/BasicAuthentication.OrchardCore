@@ -330,3 +330,11 @@ ASALocalRun/
 
 # Xamarin
 *.orig
+
+# Orchard Core specifics
+App_Data/
+bin/
+obj/
+.dotnet/
+.nuget/
+.packages/
