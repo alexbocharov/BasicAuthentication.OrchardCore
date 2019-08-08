@@ -88,7 +88,7 @@ stages:
             command: custom
             arguments: 'locals all -clear'
         # Use utility script to run script command dependent on agent OS.
-        - script: eng\common\cibuild.cmd -configuration $(_BuildConfig) -prepareMachine $(_BuildArgs)
+        - script: eng\common\cibuild.cmd -configuration $(_BuildConfig) -prepareMachine $(_OfficialBuildArgs)
           displayName: Windows Build / Publish
         - task: NuGetCommand@2
           displayName: Publish Packages
