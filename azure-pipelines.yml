@@ -97,7 +97,7 @@ jobs:
       helixRepo: alexbocharov/OrchardCore.BasicAuthentication
       pool:
         name: Hosted Ubuntu 1604
-      container: LinuxContainer
+      #container: LinuxContainer
       variables:
       # Only enable publishing in official builds.
       - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
@@ -123,3 +123,21 @@ jobs:
         name: Build
         displayName: Build
         condition: succeeded()
+      - task: PublishBuildArtifacts@1
+        displayName: Upload logs
+        continueOnError: true
+        inputs:
+          pathtoPublish: artifacts/log/
+          artifactName: Source_Build_Logs
+          artifactType: Container
+          parallel: true
+      - task: PublishBuildArtifacts@1
+        displayName: Upload package artifacts
+        # Only capture source build artifacts in PRs for the sake of inspecting
+        # changes that impact source-build. The artifacts from this build pipeline are never actually used.
+        condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
+        inputs:
+          pathtoPublish: artifacts/packages/
+          artifactName: Source_Build_Packages
+          artifactType: Container
+          parallel: true
