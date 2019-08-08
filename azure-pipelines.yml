@@ -37,7 +37,7 @@ stages:
       enablePublishBuildArtifacts: true
       enablePublishTestResults: true
       enablePublishBuildAssets: true
-      enablePublishUsingPipelines: ${{ variables._PublishUsingPipelines }}
+      enablePublishUsingPipelines: $(_PublishUsingPipelines)
       helixRepo: alexbocharov/OrchardCore.BasicAuthentication
       jobs:
       - job: Windows_NT
@@ -62,7 +62,6 @@ stages:
             ${{ if in(variables['Build.Reason'], 'PullRequest') }}:
               Build_Debug:
                 _BuildConfig: Debug
-                _PublishType: none
                 _SignType: test
                 _DotNetPublishToBlobFeed: false
                 _BuildArgs:
@@ -71,7 +70,6 @@ stages:
               _BuildConfig: Release
               # PRs or external builds are not signed.
               ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-                _PublishType: none
                 _SignType: test
                 _DotNetPublishToBlobFeed: false
               ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
@@ -88,7 +86,7 @@ stages:
             command: custom
             arguments: 'locals all -clear'
         # Use utility script to run script command dependent on agent OS.
-        - script: eng\common\cibuild.cmd -configuration $(_BuildConfig) -prepareMachine $(_OfficialBuildArgs)
+        - script: eng\common\cibuild.cmd -configuration $(_BuildConfig) -prepareMachine $(_BuildArgs)
           displayName: Windows Build / Publish
         - task: NuGetCommand@2
           displayName: Publish Packages
