@@ -86,6 +86,13 @@ stages:
             $(_InternalBuildArgs)
             $(_ValidateSdkArgs)
           displayName: Windows Build / Publish
+        - task: NuGetCommand@2
+          displayName: Publish Packages
+          inputs:
+            command: 'push'
+            packagesToPush: '$(Build.SourcesDirectory)/artifacts/packages/**/*.nupkg;!$(Build.SourcesDirectory)/artifacts/packages/**/*.symbols.nupkg'
+            nuGetFeedType: 'external'
+            publishFeedCredentials: 'MyGet'
 
       - job: OSX
         pool:
