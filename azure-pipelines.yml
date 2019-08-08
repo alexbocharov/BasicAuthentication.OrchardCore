@@ -64,6 +64,7 @@ stages:
                 _BuildConfig: Debug
                 _PublishType: none
                 _SignType: test
+                _DotNetPublishToBlobFeed: false
                 _BuildArgs:
 
             Build_Release:
@@ -72,8 +73,10 @@ stages:
               ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
                 _PublishType: none
                 _SignType: test
+                _DotNetPublishToBlobFeed: false
               ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
                 _SignType: real
+                _DotNetPublishToBlobFeed: true
                 _BuildArgs: $(_OfficialBuildArgs)
         steps:
         - checkout: self
