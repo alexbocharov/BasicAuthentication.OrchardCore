@@ -46,11 +46,11 @@ stages:
         variables:
         - _Script: eng\common\cibuild.cmd
         - _ValidateSdkArgs: ''
-        - _OfficialBuildArgs: ''
+        - _BuildArgs: ''
 
         # Only enable publishing in non-public, non PR scenarios.
         - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-          - _OfficialBuildArgs: /p:DotNetSignType=$(_SignType) 
+          - _BuildArgs: /p:DotNetSignType=$(_SignType) 
                                 /p:TeamName=$(_TeamName) 
                                 /p:Sign=false
                                 /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
@@ -62,7 +62,6 @@ stages:
                 _BuildConfig: Debug
                 _PublishType: none
                 _SignType: test
-                _DotNetPublishToBlobFeed: false
                 _BuildArgs:
 
             Build_Release:
@@ -71,11 +70,10 @@ stages:
               ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
                 _PublishType: none
                 _SignType: test
-                _DotNetPublishToBlobFeed: false
+                _BuildArgs: $(_BuildArgs)
               ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
                 _SignType: real
-                _DotNetPublishToBlobFeed: true
-                _BuildArgs: $(_OfficialBuildArgs)
+                _BuildArgs: $(_BuildArgs)
         steps:
         - checkout: self
           clean: true
@@ -83,7 +81,7 @@ stages:
         - script: $(_Script)
             -configuration $(_BuildConfig) 
             -prepareMachine
-            $(_OfficialBuildArgs)
+            $(_BuildArgs)
             $(_ValidateSdkArgs)
           displayName: Windows Build / Publish
         - task: NuGetCommand@2
