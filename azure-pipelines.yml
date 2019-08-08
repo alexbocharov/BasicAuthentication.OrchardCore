@@ -45,16 +45,20 @@ stages:
           name: Hosted VS2017
         variables:
         - _Script: eng\common\cibuild.cmd
-        - _ValidateSdkArgs: ''
-        - _OfficialBuildArgs: ''
 
-        # Only enable publishing in non-public, non PR scenarios.
+        # Only enable publishing in official builds.
         - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-          - _OfficialBuildArgs: /p:DotNetSignType=$(_SignType) 
-                                /p:TeamName=$(_TeamName) 
-                                /p:Sign=false
-                                /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
-                                /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
+          # DotNet-Blob-Feed provides: dotnetfeed-storage-access-key-1
+          # Publish-Build-Assets provides: MaestroAccessToken, BotAccount-dotnet-maestro-bot-PAT
+          - name: _OfficialBuildArgs
+            value: /p:DotNetSignType=$(_SignType)
+                   /p:TeamName=$(_TeamName)
+                   /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
+                   /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
+        # else
+        - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
+          - name: _OfficialBuildArgs
+            value: ''
         strategy:
           matrix:
             ${{ if in(variables['Build.Reason'], 'PullRequest') }}:
@@ -70,19 +74,22 @@ stages:
               ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
                 _PublishType: none
                 _SignType: test
-                _BuildArgs: $(_OfficialBuildArgs)
               ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
                 _SignType: real
                 _BuildArgs: $(_OfficialBuildArgs)
         steps:
         - checkout: self
           clean: true
+        - task: NuGetCommand@2
+          displayName: 'Clear NuGet caches'
+          condition: succeeded()
+          inputs:
+            command: custom
+            arguments: 'locals all -clear'
         # Use utility script to run script command dependent on agent OS.
         - script: $(_Script)
             -configuration $(_BuildConfig) 
-            -prepareMachine
-            $(_OfficialBuildArgs)
-            $(_ValidateSdkArgs)
+            -prepareMachine $(_BuildArgs)
           displayName: Windows Build / Publish
         - task: NuGetCommand@2
           displayName: Publish Packages
