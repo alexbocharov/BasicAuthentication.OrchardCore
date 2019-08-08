@@ -102,8 +102,7 @@ jobs:
       # Only enable publishing in official builds.
       - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
         - name: _OfficialBuildArgs
-          value: /p:Sign=false
-                 /p:DotNetSignType=$(_SignType)
+          value: /p:DotNetSignType=$(_SignType)
                  /p:TeamName=$(_TeamName)
                  /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
                  /p:DotNetArtifactsCategory=$(_DotNetArtifactsCategory)
@@ -120,9 +119,7 @@ jobs:
             _DotNetPublishToBlobFeed: true
             _BuildArgs: $(_OfficialBuildArgs)
       steps:
-      - script: eng/common/cibuild.sh
-          --configuration $(_BuildConfig)
-          --prepareMachine
+      - script: eng\common\build.sh -restore -build -test -pack -publish -ci -configuration $(_BuildConfig) -prepareMachine $(_BuildArgs)
         name: Build
         displayName: Build
         condition: succeeded()
