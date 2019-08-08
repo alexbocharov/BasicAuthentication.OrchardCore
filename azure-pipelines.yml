@@ -10,7 +10,6 @@ variables:
   - name: _DotNetArtifactsCategory
     value: ORCHARDCOREMODULES
 
-# CI and PR triggers
 trigger:
   batch: true
   branches:
@@ -29,115 +28,105 @@ resources:
   - container: LinuxContainer
     image: microsoft/dotnet-buildtools-prereqs:ubuntu-14.04-cross-0cd4667-20170319080304
 
-jobs:
-  # - template: /eng/common/templates/job/job.yml
-  #   parameters:
-  #     enablePublishBuildArtifacts: true
-  #     enablePublishUsingPipelines: $(_PublishUsingPipelines)
-  #     helixRepo: alexbocharov/OrchardCore.BasicAuthentication
-  #     name: Windows
-  #     pool:
-  #       name: Hosted VS2017
-  #     variables:
-  #     # Only enable publishing in official builds.
-  #     - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-  #       - name: _OfficialBuildArgs
-  #         value: /p:DotNetSignType=$(_SignType)
-  #                /p:TeamName=$(_TeamName)
-  #                /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
-  #                /p:DotNetArtifactsCategory=$(_DotNetArtifactsCategory)
-  #                /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
-  #     # else
-  #     - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-  #       - name: _OfficialBuildArgs
-  #         value: ''
-  #     strategy:
-  #       matrix:
-  #         ${{ if in(variables['Build.Reason'], 'PullRequest') }}:
-  #           Debug:
-  #             _BuildConfig: Debug
-  #             _SignType: test
-  #             _DotNetPublishToBlobFeed: false
-  #             _BuildArgs:
-
-  #         Release:
-  #           _BuildConfig: Release
-  #           # PRs or external builds are not signed.
-  #           ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-  #             _SignType: test
-  #             _DotNetPublishToBlobFeed: false
-  #           ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-  #             _SignType: real
-  #             _DotNetPublishToBlobFeed: true
-  #             _BuildArgs: $(_OfficialBuildArgs)
-  #     steps:
-  #     - checkout: self
-  #       clean: true
-  #     - task: NuGetCommand@2
-  #       displayName: 'Clear NuGet caches'
-  #       condition: succeeded()
-  #       inputs:
-  #         command: custom
-  #         arguments: 'locals all -clear'
-  #     - script: eng\common\build.ps1 -restore -build -test -pack -publish -ci -configuration $(_BuildConfig) -prepareMachine $(_BuildArgs)
-  #       displayName: Build and Publish
-  #     - task: PublishBuildArtifacts@1
-  #       displayName: Upload package artifacts
-  #       condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false), eq(variables['_BuildConfig'], 'Release'))
-  #       inputs:
-  #         pathtoPublish: artifacts/packages/
-  #         artifactName: artifacts
-  #         artifactType: Container
-  #         parallel: true
-
-  - template: /eng/common/templates/job/job.yml
+stages:
+- stage: build
+  displayName: Build
+  jobs:
+  - template: /eng/common/templates/jobs/jobs.yml
     parameters:
-      name: Linux
+      enableMicrobuild: true
       enablePublishBuildArtifacts: true
+      enablePublishTestResults: true
+      enablePublishBuildAssets: true
+      enablePublishUsingPipelines: ${{ variables._PublishUsingPipelines }}
+      enableTelemetry: true
       helixRepo: alexbocharov/OrchardCore.BasicAuthentication
-      pool:
-        name: Hosted Ubuntu 1604
-      container: LinuxContainer
-      variables:
-      # Only enable publishing in official builds.
-      - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
-        - name: _OfficialBuildArgs
-          value: /p:DotNetSignType=$(_SignType)
-                 /p:TeamName=$(_TeamName)
-                 /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
-                 /p:DotNetArtifactsCategory=$(_DotNetArtifactsCategory)
-                 /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
-      # else
-      - ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
-        - name: _OfficialBuildArgs
-          value: ''
-      strategy:
-        matrix:
-          Release:
-            _BuildConfig: Release
-            _SignType: real
-            _DotNetPublishToBlobFeed: true
-            _BuildArgs: $(_OfficialBuildArgs)
-      steps:
-      - script: eng/common/build.sh -restore -build -test -pack -publish -ci -configuration $(_BuildConfig) -prepareMachine $(_BuildArgs)
-        name: Build
-        displayName: Build
-        condition: succeeded()
-      - task: PublishBuildArtifacts@1
-        displayName: Upload logs
-        continueOnError: true
-        inputs:
-          pathtoPublish: artifacts/log/
-          artifactName: Source_Build_Logs
-          artifactType: Container
-          parallel: true
-      - task: PublishBuildArtifacts@1
-        displayName: Upload package artifacts
-        # Only capture source build artifacts in PRs for the sake of inspecting
-        # changes that impact source-build. The artifacts from this build pipeline are never actually used.
-        condition: and(succeeded(), eq(variables['Build.Reason'], 'PullRequest'))
-        inputs:
-          pathtoPublish: artifacts/packages/
-          artifactName: Source_Build_Packages
-          artifactType: Container
-          parallel: true
+      jobs:
+      - job: Windows_NT
+        pool:
+          name: Hosted VS2017
+        variables:
+        - _Script: eng\common\cibuild.cmd
+        - _ValidateSdkArgs: ''
+        - _InternalBuildArgs: ''
+
+        # Only enable publishing in non-public, non PR scenarios.
+        - ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
+          - _InternalBuildArgs: /p:DotNetSignType=$(_SignType) /p:TeamName=$(_TeamName) /p:Sign=false
+              /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
+              /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
+
+        strategy:
+          matrix:
+            Build_Debug:
+              _BuildConfig: Debug
+              _PublishType: none
+              _SignType: test
+              _DotNetPublishToBlobFeed : false
+            Build_Release:
+              _BuildConfig: Release
+              # PRs or external builds are not signed.
+              ${{ if or(eq(variables['System.TeamProject'], 'public'), in(variables['Build.Reason'], 'PullRequest')) }}:
+                _PublishType: none
+                _SignType: test
+                _DotNetPublishToBlobFeed : false
+              ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
+                _PublishType: blob
+                _SignType: real
+                _DotNetPublishToBlobFeed : true
+        steps:
+        - checkout: self
+          clean: true
+        # Use utility script to run script command dependent on agent OS.
+        - script: $(_Script)
+            -configuration $(_BuildConfig) 
+            -prepareMachine
+            $(_InternalBuildArgs)
+            $(_ValidateSdkArgs)
+          displayName: Windows Build / Publish
+
+      - job: OSX
+        pool:
+          name: Hosted macOS
+        strategy:
+          matrix:
+            debug_configuration:
+              _BuildConfig: Debug
+            release_configuration:
+              _BuildConfig: Release
+        steps:
+        - checkout: self
+          clean: true
+        - script: eng/common/cibuild.sh
+            --configuration $(_BuildConfig)
+            --prepareMachine
+          name: Build
+          displayName: Build
+          condition: succeeded()
+          
+      - job: Linux
+        pool:
+          name: Hosted Ubuntu 1604
+        container: LinuxContainer
+        strategy:
+          matrix:
+            debug_configuration:
+              _BuildConfig: Debug
+            release_configuration:
+              _BuildConfig: Release
+        steps:
+        - checkout: self
+          clean: true
+        - script: eng/common/cibuild.sh
+            --configuration $(_BuildConfig)
+            --prepareMachine
+          name: Build
+          displayName: Build
+          condition: succeeded()
+
+- ${{ if and(ne(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
+  - template: eng\common\templates\post-build\post-build.yml
+    parameters:
+      # Symbol validation isn't being very reliable lately. This should be enabled back
+      # once this issue is resolved: https://github.com/dotnet/arcade/issues/2871
+      enableSymbolValidation: false
