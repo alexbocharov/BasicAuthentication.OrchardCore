@@ -34,12 +34,10 @@ stages:
   jobs:
   - template: /eng/common/templates/jobs/jobs.yml
     parameters:
-      enableMicrobuild: true
       enablePublishBuildArtifacts: true
       enablePublishTestResults: true
       enablePublishBuildAssets: true
       enablePublishUsingPipelines: ${{ variables._PublishUsingPipelines }}
-      enableTelemetry: true
       helixRepo: alexbocharov/OrchardCore.BasicAuthentication
       jobs:
       - job: Windows_NT
