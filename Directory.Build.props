@@ -13,7 +13,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <Copyright>© 2019 Alexander Bocharov</Copyright>
+    <CopyrightOrchardCoreBasicAuthentication>© 2019 Alexander Bocharov</CopyrightOrchardCoreBasicAuthentication>
     <Authors>Alexander Bocharov</Authors>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
