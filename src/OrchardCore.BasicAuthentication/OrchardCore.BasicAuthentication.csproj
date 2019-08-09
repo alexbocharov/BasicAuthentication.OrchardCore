@@ -13,8 +13,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
-    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-71075" />
-    <PackageReference Include="OrchardCore.Users.Abstractions" Version="1.0.0-beta3-71075" />
+    <PackageReference Include="OrchardCore.Module.Targets" Version="1.0.0-beta3-71958" />
+    <PackageReference Include="OrchardCore.Users.Abstractions" Version="1.0.0-beta3-71958" />
   </ItemGroup>
 
 </Project>
