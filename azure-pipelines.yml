@@ -7,6 +7,8 @@ variables:
     value: true
   - name: _PublishUsingPipelines
     value: true
+  - name: _Sign
+    value: false
   - name: _DotNetArtifactsCategory
     value: ORCHARDCOREMODULES
 
@@ -48,6 +50,7 @@ stages:
         - ${{ if and(eq(variables['System.TeamProject'], 'public'), notin(variables['Build.Reason'], 'PullRequest')) }}:
           - name: _OfficialBuildArgs
             value: /p:DotNetSignType=$(_SignType)
+                   /p:Sign=$(_Sign)
                    /p:TeamName=$(_TeamName)
                    /p:DotNetPublishUsingPipelines=$(_PublishUsingPipelines)
                    /p:OfficialBuildId=$(BUILD.BUILDNUMBER)
