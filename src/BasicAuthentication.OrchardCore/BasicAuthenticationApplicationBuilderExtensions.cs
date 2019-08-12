@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace OrchardCore.BasicAuthentication
+namespace BasicAuthentication.OrchardCore
 {
     public static class BasicAuthenticationApplicationBuilderExtensions
     {

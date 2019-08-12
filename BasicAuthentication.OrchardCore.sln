@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28729.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{591B2F4C-75C7-4A00-AF68-EA5DD77B4770}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OrchardCore.BasicAuthentication", "src\OrchardCore.BasicAuthentication\OrchardCore.BasicAuthentication.csproj", "{9001F7E1-DA8B-4AFE-BF14-E88DB511405A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BasicAuthentication.OrchardCore", "src\BasicAuthentication.OrchardCore\BasicAuthentication.OrchardCore.csproj", "{9001F7E1-DA8B-4AFE-BF14-E88DB511405A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

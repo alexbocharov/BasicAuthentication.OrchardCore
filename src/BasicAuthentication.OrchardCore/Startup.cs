@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using OrchardCore.Modules;
 
-namespace OrchardCore.BasicAuthentication
+namespace BasicAuthentication.OrchardCore
 {
     public class Startup : StartupBase
     {

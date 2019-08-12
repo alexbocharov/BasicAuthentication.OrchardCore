@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using OrchardCore.Users;
 
-namespace OrchardCore.BasicAuthentication
+namespace BasicAuthentication.OrchardCore
 {
     public class BasicAuthenticationMiddleware
     {
