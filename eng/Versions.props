@@ -13,7 +13,6 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Manual">
-    <OrchardCorePackagesVersion>1.0.0-beta3-72166</OrchardCorePackagesVersion>
-    <MicrosoftAspNetCoreIdentityPackageVersion>2.2.0</MicrosoftAspNetCoreIdentityPackageVersion>
+    <OrchardCorePackagesVersion>1.0.0-beta3-72628</OrchardCorePackagesVersion>
   </PropertyGroup>
 </Project>

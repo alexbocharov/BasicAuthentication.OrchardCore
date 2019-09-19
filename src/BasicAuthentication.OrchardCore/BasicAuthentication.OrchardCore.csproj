@@ -3,7 +3,8 @@
   <PropertyGroup>
     <Title>Basic Authentication module for Orchard Core</Title>
     <Description>The Basic Authentication module enables authentication of external apps through Basic Authentication.</Description>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <PackageId>BasicAuthentication.OrchardCore</PackageId>
     <PackageTags>BasicAuth;BasicAuthentication;OrchardCore</PackageTags>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -12,7 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="$(MicrosoftAspNetCoreIdentityPackageVersion)" />
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 
   <ItemGroup>
