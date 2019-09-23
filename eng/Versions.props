@@ -13,6 +13,6 @@
   </PropertyGroup>
 
   <PropertyGroup Label="Manual">
-    <OrchardCorePackagesVersion>1.0.0-beta3-72628</OrchardCorePackagesVersion>
+    <OrchardCorePackagesVersion>1.0.0-beta3-72720</OrchardCorePackagesVersion>
   </PropertyGroup>
 </Project>
